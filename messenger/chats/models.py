@@ -4,8 +4,11 @@ from users.models import User
 
 class Chat(models.Model):
     is_group_chat = models.BooleanField(verbose_name='Групповой ли чат')
-    topic = models.TextField(max_length=50, verbose_name='Тема')
-    last_message = models.TextField(max_length=100, verbose_name='Последнее сообщение')
+    topic = models.TextField(max_length=50,
+                            verbose_name='Тема')
+    last_message = models.TextField(max_length=100,
+                                    verbose_name='Последнее сообщение',
+                                    null=True)
 
     class Meta:
         verbose_name = 'Чат'
@@ -13,10 +16,15 @@ class Chat(models.Model):
 
 
 class Message(models.Model):
-    chat = models.ForeignKey(to=Chat, on_delete=models.CASCADE, verbose_name='Чат')
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    chat = models.ForeignKey(to=Chat,
+                            on_delete=models.CASCADE,
+                            verbose_name='Чат')
+    user = models.ForeignKey(to=User,
+                            on_delete=models.CASCADE,
+                            verbose_name='Пользователь')
     content = models.TextField(verbose_name='Содержание')
-    added_at = models.DateTimeField(null=True, verbose_name='Дата отправки')
+    added_at = models.DateTimeField(null=True,
+                                    verbose_name='Дата отправки')
 
     class Meta:
         verbose_name = 'Сообщение'
@@ -25,11 +33,19 @@ class Message(models.Model):
 
 
 class Attachment(models.Model):
-    chat = models.ForeignKey(to=Chat, on_delete=models.CASCADE, verbose_name='Чат')
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    message = models.ForeignKey(to=Message, on_delete=models.CASCADE, verbose_name='Сообщение')
-    attach_type = models.TextField(max_length=60, verbose_name='Тип вложения')
-    url = models.CharField(max_length=100, verbose_name='Ссылка')
+    chat = models.ForeignKey(to=Chat,
+                            on_delete=models.CASCADE,
+                            verbose_name='Чат')
+    user = models.ForeignKey(to=User,
+                            on_delete=models.CASCADE,
+                            verbose_name='Пользователь')
+    message = models.ForeignKey(to=Message,
+                                on_delete=models.CASCADE,
+                                verbose_name='Сообщение')
+    attach_type = models.TextField(max_length=60,
+                                verbose_name='Тип вложения')
+    url = models.CharField(max_length=100,
+                        verbose_name='Ссылка')
 
     class Meta:
         verbose_name = 'Вложение'
@@ -37,10 +53,16 @@ class Attachment(models.Model):
 
 
 class Member(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    chat = models.ForeignKey(to=Chat, on_delete=models.CASCADE, verbose_name='Чат')
+    user = models.ForeignKey(to=User,
+                            on_delete=models.CASCADE,
+                            verbose_name='Пользователь')
+    chat = models.ForeignKey(to=Chat,
+                            on_delete=models.CASCADE,
+                            verbose_name='Чат')
     new_messages = models.IntegerField(verbose_name='Кол-во новых сообщений')
-    last_read_message = models.ForeignKey(to=Message, on_delete=models.CASCADE, verbose_name='Последнее прочитанное')
+    last_read_message = models.ForeignKey(to=Message,
+                                        on_delete=models.CASCADE,
+                                        verbose_name='Последнее прочитанное')
 
     class Meta:
         verbose_name = 'Участник'

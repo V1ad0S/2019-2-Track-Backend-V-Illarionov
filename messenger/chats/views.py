@@ -1,5 +1,7 @@
 # from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponse
+from chats.models import Chat, Member
+from users.models import User
 
 def get_chat_list(request):
     if request.method == 'GET':
@@ -14,16 +16,10 @@ def chat_detail(request, chatID):
     else:
         raise HttpResponseNotAllowed(['GET'])
 
-def create_chat(request):
+def create_chat(request, user):
     if request.method == 'POST':
-        first = str(request.POST.get('first'))
-        second = str(request.POST.get('second'))
-        first_user = Chat.objects.filter(name=first)
-        second_user = Chat.objects.filter(name=second).values('id')
-        Chat.objects.create(name=first + ' with ' + second, tag='@' + first + second)
-        new_chat = Chat.objects.filter(name=first + ' with ' + second)
-        Member.objects.create(user_id=first_user, chat_id=new_chat)
-        Member.objects.create(user_id=second_user, chat_id=new_chat)
+        chat = Chat.objects.create(topic=user.name, is_group_chat=False)
+        Member.objects.create(user=user.id, chat=chat.id)
         return HttpResponse
     else:
         return HttpResponseNotAllowed(['POST'])
