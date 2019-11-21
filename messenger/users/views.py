@@ -13,3 +13,10 @@ def contact_list(request):
         return JsonResponse( { 'test': 'Contact list' } )
     else:
         raise HttpResponseNotAllowed(['GET'])
+
+def find_users(request):
+    if request.method == 'GET':
+        user = User.objects.filter(name__contains=request.GET.get('name'))
+        return HttpResponse
+    else:
+        return HttpResponseNotAllowed(['GET'])
