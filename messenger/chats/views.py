@@ -16,9 +16,12 @@ def chat_detail(request, chatID):
     else:
         raise HttpResponseNotAllowed(['GET'])
 
-def create_chat(request, user):
+def create_chat(request):
     if request.method == 'POST':
-        chat = Chat.objects.create(topic=user.name, is_group_chat=False)
+        username = str(request.POST.get('username'))
+        user = Chat.objects.filter(name=username)
+
+        chat = Chat.objects.create(topic=user.username, is_group_chat=False)
         Member.objects.create(user=user.id, chat=chat.id)
         return HttpResponse
     else:
