@@ -7,8 +7,9 @@ from chats.forms import *
 @csrf_exempt
 @require_GET
 def chat_list(request):
-    chats = Chat.objects.all().values('id', 'topic')
-    return JsonResponse({'chats': list(chats)})
+    user_id = request.GET.get('user_id')
+    chat_id_list = [member.chat_id for member in Member.objects.filter(user=user_id)]
+    return JsonResponse({'chat_id_list': chat_id_list})
 
 @csrf_exempt
 @require_GET
@@ -18,10 +19,9 @@ def chat_detail(request, chatID):
     except Chat.DoesNotExist:
         return HttpResponse('Chat does not exist')
 
-    messages = Message.objects.filter(chat=chat).values('id', 'content', 'user', 'added_at')
+    message_id_list = [message.id for message in Message.objects.filter(chat=chat).order_by('-added_at')]
     return JsonResponse({
-        'Chat ID': chatID,
-        'Messages': list(messages),
+        'Messages': message_id_list,
     })
 
 @csrf_exempt
@@ -29,8 +29,8 @@ def chat_detail(request, chatID):
 def create_chat(request):
     form = CreatePersonalChatForm(request.POST)
     if form.is_valid():
-        form.save()
-        return JsonResponse({'message': 'Chat created'})
+        chat_id = form.save()
+        return JsonResponse({'chat_id': chat_id})
     return JsonResponse({'errors': form.errors}, status=400)
 
 @csrf_exempt
@@ -38,8 +38,8 @@ def create_chat(request):
 def send_message(request):
     form = SendMessageForm(request.POST)
     if form.is_valid():
-        form.save()
-        return JsonResponse({'message': 'Message sended'})
+        message_id = form.save()
+        return JsonResponse({'message_id': message_id})
     else:
         return JsonResponse({'errors': form.errors}, status=400)
 

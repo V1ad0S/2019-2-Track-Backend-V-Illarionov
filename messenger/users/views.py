@@ -23,5 +23,11 @@ def contact_list(request):
 @csrf_exempt
 @require_GET
 def find_users(request):
-    users = list(User.objects.filter(username__contains=request.GET.get('username')).values('id', 'username'))
+    users = list(
+        User.objects.filter(
+            username__icontains=request.GET.get('username')
+        ).values(
+            'id', 'username'
+        )
+    )
     return JsonResponse({'users': users})
