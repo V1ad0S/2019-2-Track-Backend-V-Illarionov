@@ -4,11 +4,14 @@ from users.models import User
 
 class Chat(models.Model):
     is_group_chat = models.BooleanField(verbose_name='Групповой ли чат')
-    topic = models.TextField(max_length=50,
-                            verbose_name='Тема')
+    topic = models.CharField(max_length=60,
+                            verbose_name='Название')
     last_message = models.TextField(max_length=100,
                                     verbose_name='Последнее сообщение',
                                     null=True)
+
+    def __str__(self):
+        return self.topic
 
     class Meta:
         verbose_name = 'Чат'
@@ -61,6 +64,7 @@ class Member(models.Model):
                             verbose_name='Чат')
     new_messages = models.IntegerField(verbose_name='Кол-во новых сообщений')
     last_read_message = models.ForeignKey(to=Message,
+                                        null=True,
                                         on_delete=models.CASCADE,
                                         verbose_name='Последнее прочитанное')
 
