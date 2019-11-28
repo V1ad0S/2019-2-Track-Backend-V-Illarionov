@@ -12,7 +12,7 @@ def get_profile(request):
         user = User.objects.get(id=request.GET.get('id'))
     except User.DoesNotExist:
         return HttpResponse('No such user')
-    return JsonResponse({'name':user.username})
+    return JsonResponse({'username':user.username})
 
 @csrf_exempt
 @require_GET
